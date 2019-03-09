@@ -1,0 +1,39 @@
+{
+  "name": "ts-express-apollo",
+  "version": "1.0.0",
+  "description": "A TypeScript, express and GraphQL boilerplate",
+  "main": "./src/server",
+  "scripts": {
+    "build": "tsc",
+    "start": "nodemon"
+  },
+  "author": "Jonas Anker Jahr",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/date-fns": "^2.6.0",
+    "@types/express": "^4.16.1",
+    "@types/graphql": "^14.0.7",
+    "@types/jsonwebtoken": "^8.3.2",
+    "@types/node": "^11.9.5",
+    "@types/uuid": "^3.4.4",
+    "nodemon": "^1.18.10",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.4.6",
+    "bcrypt": "^3.0.4",
+    "body-parser": "^1.18.3",
+    "date-fns": "^1.30.1",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "graphql": "^14.1.1",
+    "jsonwebtoken": "^8.5.0",
+    "knex": "^0.16.3",
+    "lodash.merge": "^4.6.1",
+    "mysql2": "^1.6.5",
+    "objection": "^1.6.2",
+    "uuid": "^3.3.2"
+  }
+}
