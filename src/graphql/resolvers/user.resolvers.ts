@@ -1,10 +1,11 @@
 import { IResolverObject } from 'graphql-tools';
 import { ApiResponse } from '../../classes';
 import { User } from '../../models';
+import { notFound } from '../../utils';
 
 // @TODO Implement policies
 
-const NOT_FOUND: string = 'User not found';
+const RESOURCE: string = 'User';
 
 export const userResolvers: IResolverObject = {
   Query: {
@@ -12,7 +13,7 @@ export const userResolvers: IResolverObject = {
       const user = await User.query().findById(id);
       return user
         ? new ApiResponse(200, { user })
-        : new ApiResponse(404, { message: NOT_FOUND });
+        : new ApiResponse(404, notFound(RESOURCE));
     },
     users: async () => {
       const users = await User.query();
@@ -31,7 +32,7 @@ export const userResolvers: IResolverObject = {
       const user = await User.query().patchAndFetchById(input.id, input);
       return user
         ? new ApiResponse(200, { user })
-        : new ApiResponse(404, { message: NOT_FOUND });
+        : new ApiResponse(404, notFound(RESOURCE));
     },
     deleteUser: async (_, { id }: { id: string }) => {
       const user = await User.query().findById(id);
@@ -39,7 +40,7 @@ export const userResolvers: IResolverObject = {
         await user.$query().delete();
         return new ApiResponse(204);
       }
-      return new ApiResponse(404, { message: NOT_FOUND });
+      return new ApiResponse(404, notFound(RESOURCE));
     }
   }
 };

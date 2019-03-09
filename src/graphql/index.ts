@@ -1,16 +1,16 @@
 import { DocumentNode } from 'graphql';
 import { IResolvers } from 'graphql-tools';
-import { testResolvers, userResolvers } from './resolvers'
-import { rootTypeDefs, testTypeDefs, userTypeDefs } from './typedefs';
+import { authResolvers, userResolvers } from './resolvers'
+import { authTypeDefs, rootTypeDefs, userTypeDefs } from './typedefs';
 const merge = require('lodash.merge')
 
 export const typeDefs: DocumentNode[] = [
   rootTypeDefs,
-  testTypeDefs,
+  authTypeDefs,
   userTypeDefs,
 ];
 
 export const resolvers: IResolvers = merge(
-  testResolvers,
+  authResolvers,
   userResolvers,
 );

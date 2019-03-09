@@ -1,3 +1,9 @@
+import { JWTClaims } from '../enums';
+
 export interface IJWTPayload {
-  user_id: string;
+  id: string;
+  [JWTClaims.IAT]: string;
+  [JWTClaims.EXP]: string;
+  [JWTClaims.NBF]: string;
+  [JWTClaims.JTI]: string;
 }

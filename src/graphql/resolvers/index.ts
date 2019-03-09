@@ -1,2 +1,2 @@
-export * from './test.resolvers';
+export * from './auth.resolvers';
 export * from './user.resolvers';

@@ -28,6 +28,14 @@ export class User extends BaseModel {
     };
   }
 
+  static async attemptLogin(email: string, password: string): Promise<User | null> {
+    const user = await this.query().where('email', email).first();
+    if (user && await hashService.compare(password, user.password)) {
+      return user;
+    }
+    return null;
+  }
+
   async $beforeInsert() {
     super.$beforeInsert();
     this.password = await hashService.make(this.password);

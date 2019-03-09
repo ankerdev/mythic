@@ -6,6 +6,10 @@ class Hash {
   async make(plaintext: string): Promise<string> {
     return await bcrypt.hash(plaintext, Hash.SALT_ROUNDS);
   }
+
+  async compare(plaintext: string, hash: string): Promise<boolean> {
+    return await bcrypt.compare(plaintext, hash);
+  }
 }
 
 export const hashService = new Hash();
