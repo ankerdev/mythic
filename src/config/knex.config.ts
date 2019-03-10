@@ -14,6 +14,7 @@ export const knexConfig: Knex.Config = {
   migrations: {
     directory: path.join(__dirname, '../database/migrations/'),
   },
+  debug: getenv('APP_TESTING', false),
 }
 
 export const knex = Knex(knexConfig);

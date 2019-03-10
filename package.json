@@ -18,11 +18,11 @@
     "@types/node": "^11.9.5",
     "@types/uuid": "^3.4.4",
     "nodemon": "^1.18.10",
-    "ts-node": "^8.0.2",
-    "typescript": "^3.3.3"
+    "ts-node": "^8.0.3",
+    "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "apollo-server-express": "^2.4.6",
+    "apollo-server-express": "^2.4.8",
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
     "date-fns": "^1.30.1",
@@ -33,7 +33,7 @@
     "knex": "^0.16.3",
     "lodash.merge": "^4.6.1",
     "mysql2": "^1.6.5",
-    "objection": "^1.6.2",
+    "objection": "^1.6.3",
     "uuid": "^3.3.2"
   }
 }

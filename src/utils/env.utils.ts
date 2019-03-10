@@ -11,5 +11,11 @@ export const getenv = (key: string, fallback?: any): any => {
     return valueAsNum;
   }
 
+  // Handle boolean
+  switch (value) {
+    case 'true': return true;
+    case 'false': return false;
+  }
+
   return value;
 }

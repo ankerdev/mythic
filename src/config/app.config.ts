@@ -1,8 +1,8 @@
 import * as Knex from 'knex';
 import { getenv } from '../utils';
-import { knex } from './knex.config';
-import { IJWTConfig, jwt } from './jwt.config';
 import { IAuthConfig, auth } from './auth.config';
+import { IJWTConfig, jwt } from './jwt.config';
+import { knex } from './knex.config';
 
 interface IConfig {
   port: number;

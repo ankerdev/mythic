@@ -1,5 +1,5 @@
+import { Policy } from '../classes';
 import { User } from '../models';
-import { Policy } from './base.policy';
 
 class UserPolicy extends Policy {
   user(auth: User, userId: string): boolean {
