@@ -1,8 +1,5 @@
-import { Request, Response } from 'express';
-
-// @TODO Add user to context interface
+import { User } from '../models';
 
 export interface IContext {
-  req: Request;
-  res: Response;
+  auth: User
 }

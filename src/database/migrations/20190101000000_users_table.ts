@@ -9,6 +9,7 @@ export async function up(knex: Knex): Promise<any> {
     table.string('last_name');
     table.string('email').unique();
     table.string('password');
+    table.boolean('is_admin').defaultTo(false);
     table.timestamps();
     table.dateTime('deleted_at');
   });

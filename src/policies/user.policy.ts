@@ -1,16 +1,12 @@
 import { User } from '../models';
+import { Policy } from './base.policy';
 
-class UserPolicy {
-  before(user: User): boolean {
-    // return user.is_admin; // @TODO Implement is_admin on user
-    return false;
+class UserPolicy extends Policy {
+  user(auth: User, userId: string): boolean {
+    return auth.id === userId;
   }
 
-  user(user: User, userTwo: User): boolean {
-    return user.id === userTwo.id;
-  }
-
-  users(user: User): boolean {
+  users(): boolean {
     return false;
   }
 
@@ -18,12 +14,12 @@ class UserPolicy {
     return true;
   }
 
-  updateUser(user: User, userTwo: User) {
-    return user.id === userTwo.id;
+  updateUser(auth: User, userId: string): boolean {
+    return auth.id === userId;
   }
 
-  deleteUser(user: User, userTwo: User) {
-    return user.id === userTwo.id;
+  deleteUser(auth: User, userId: string): boolean {
+    return auth.id === userId;
   }
 }
 

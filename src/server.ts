@@ -1,11 +1,9 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import { CONFIG } from './config';
 import { resolvers, typeDefs } from './graphql';
-import { jwtMiddleware, policyMiddleware } from './middleware';
-
-// @TODO Supress resolver warning somehow
+import { jwtMiddleware } from './middleware';
 
 class Application {
   app: express.Express;
@@ -14,12 +12,7 @@ class Application {
   constructor() {
     this.app = express();
     this.applyExpressMiddleware();
-    this.server = new ApolloServer({
-      typeDefs,
-      resolvers,
-      context: ({ res }) => ({ auth: res.locals.auth }),
-    });
-    this.server.applyMiddleware({ app: this.app });
+    this.createGraphQLServer();
     this.app.listen(CONFIG.port, () => {
       console.log(`Serving application at port ${CONFIG.port} 🚀`);
     });
@@ -28,8 +21,24 @@ class Application {
   applyExpressMiddleware(): void {
     this.app.use(bodyParser.json());
     this.app.use(jwtMiddleware.handle);
-    this.app.use(policyMiddleware.handle);
+  }
+
+  createGraphQLServer(): void {
+    const schema = makeExecutableSchema({
+      typeDefs,
+      resolvers,
+      resolverValidationOptions: {
+        requireResolversForResolveType: false,
+      },
+    });
+
+    this.server = new ApolloServer({
+      schema,
+      context: ({ res }) => ({ auth: res.locals.auth }),
+    });
+
+    this.server.applyMiddleware({ app: this.app });
   }
 }
 
-export const app = new Application().app
+export const app = new Application().app;

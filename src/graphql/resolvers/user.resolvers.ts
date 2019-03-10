@@ -1,46 +1,52 @@
 import { IResolverObject } from 'graphql-tools';
 import { ApiResponse } from '../../classes';
+import { IContext } from '../../interfaces';
 import { User } from '../../models';
-import { notFound } from '../../utils';
-
-// @TODO Implement policies
-
-const RESOURCE: string = 'User';
+import { userPolicy } from '../../policies';
+import { HTTP } from '../../utils';
 
 export const userResolvers: IResolverObject = {
   Query: {
-    user: async (_, { id }: { id: string }) => {
+    user: async (_, { id }: { id: string }, { auth }: IContext) => {
+      if (!userPolicy.canAccess('user', auth, id)) { return HTTP.UNAUTHORIZED };
       const user = await User.query().findById(id);
       return user
         ? new ApiResponse(200, { user })
-        : new ApiResponse(404, notFound(RESOURCE));
+        : HTTP.NOT_FOUND;
     },
-    users: async () => {
+
+    users: async (_, {}, { auth }: IContext) => {
+      if (!userPolicy.canAccess('users', auth)) { return HTTP.UNAUTHORIZED };
       const users = await User.query();
       return new ApiResponse(200, { users });
     },
   },
 
   Mutation: {
-    createUser: async (_, { input }: { input: User }) => {
+    createUser: async (_, { input }: { input: User }, { auth }: IContext) => {
+      if (!userPolicy.canAccess('createUser', auth)) { return HTTP.UNAUTHORIZED };
       const user = await User.query().insert(input);
       return user
         ? new ApiResponse(200, { user })
         : new ApiResponse(400, { message: 'Failed to create user' });
     },
-    updateUser: async (_, { input }: { input: User }) => {
+
+    updateUser: async (_, { input }: { input: User }, { auth }: IContext) => {
+      if (!userPolicy.canAccess('updateUser', auth, input.id)) { return HTTP.UNAUTHORIZED };
       const user = await User.query().patchAndFetchById(input.id, input);
       return user
         ? new ApiResponse(200, { user })
-        : new ApiResponse(404, notFound(RESOURCE));
+        : HTTP.NOT_FOUND;
     },
-    deleteUser: async (_, { id }: { id: string }) => {
+
+    deleteUser: async (_, { id }: { id: string }, { auth }: IContext) => {
+      if (!userPolicy.canAccess('deleteUser', auth, id)) { return HTTP.UNAUTHORIZED };
       const user = await User.query().findById(id);
       if (user) {
         await user.$query().delete();
-        return new ApiResponse(204);
+        return HTTP.NO_CONTENT;
       }
-      return new ApiResponse(404, notFound(RESOURCE));
+      return HTTP.NOT_FOUND;
     }
   }
 };

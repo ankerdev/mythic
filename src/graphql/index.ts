@@ -1,3 +1,4 @@
+export * from './resolvers';
 import { DocumentNode } from 'graphql';
 import { IResolvers } from 'graphql-tools';
 import { authResolvers, userResolvers } from './resolvers'

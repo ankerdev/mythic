@@ -10,6 +10,6 @@ export const jwt: IJWTConfig = {
   secret: getenv('JWT_SECRET'),
   options: {
     algorithm: 'HS256',
-    expiresIn: '15m',
+    expiresIn: '60m', // @TODO 30m
   },
 };
