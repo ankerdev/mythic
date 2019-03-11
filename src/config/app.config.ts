@@ -1,5 +1,5 @@
 import * as Knex from 'knex';
-import { getenv } from '../utils';
+import { getenv } from '../utils/env.utils';
 import { IAuthConfig, auth } from './auth.config';
 import { IJWTConfig, jwt } from './jwt.config';
 import { knex } from './knex.config';
