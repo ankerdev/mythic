@@ -1,4 +1,4 @@
-# ts-express-graphql
+# mythic
 A boilerplate that allows you to spin up a GraphQL API in no time. 🚀
 
 Out of the box, it comes with swell features such as:
@@ -15,6 +15,7 @@ Out of the box, it comes with swell features such as:
 ## Todo
 If you like contributing to things and see something you can improve--feel free to fork the repo and PR your feature(s). 🏅
 
+- Add `refreshAuthenticationToken` mutation
 - Allow for more databases in config, e.g. SQLite3 and PostgreSQL (NB. needs to be supported by objection.js and knex)
 - Switch to TypeORM if it's any better? [https://github.com/typeorm/typeorm]
 - Other cool stuff to make it a better experience 😎
