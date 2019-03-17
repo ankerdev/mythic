@@ -12,6 +12,8 @@ export class User extends BaseModel {
 
   static tableName = 'users';
 
+  static modelName = 'User';
+
   static get jsonSchema() {
     return {
       type: 'object',

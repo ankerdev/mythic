@@ -1,15 +1,22 @@
 import { IResolverObject } from 'graphql-tools';
 import { Response } from '../../classes';
 import { IContext } from '../../interfaces';
-import { Post } from '../../models';
+import { Post, User } from '../../models';
 import { postPolicy } from '../../policies';
 import { HTTP } from '../../utils';
 
+interface IInputContext {
+  input: Post;
+}
+
+interface IModelContext {
+  auth: User;
+  post: Post;
+}
+
 export const postResolvers: IResolverObject = {
   Query: {
-    post: async (_, { id }: { id: string }, { auth }: IContext) => {
-      const post = await Post.query().findById(id);
-      if (!post) { return HTTP.NOT_FOUND; }
+    post: async (_, {}, { auth, post }: IModelContext) => {
       if (!postPolicy.canAccess('post', auth, post)) { return HTTP.UNAUTHORIZED };
       return new Response(200, { post });
     },
@@ -22,7 +29,7 @@ export const postResolvers: IResolverObject = {
   },
 
   Mutation: {
-    createPost: async (_, { input }: { input: Post }, { auth }: IContext) => {
+    createPost: async (_, { input }: IInputContext, { auth }: IContext) => {
       if (!postPolicy.canAccess('createPost', auth)) { return HTTP.UNAUTHORIZED };
       const post = await Post.query().insert(input);
       return post
@@ -30,23 +37,16 @@ export const postResolvers: IResolverObject = {
         : new Response(400, { message: 'Failed to create post' });
     },
 
-    updatePost: async (_, { input }: { input: Post }, { auth }: IContext) => {
-      const post = await Post.query().findById(input.id);
-      if (!post) { return HTTP.NOT_FOUND; }
+    updatePost: async (_, { input }: IInputContext, { auth, post }: IModelContext) => {
       if (!postPolicy.canAccess('updatePost', auth, post)) { return HTTP.UNAUTHORIZED };
-      post.$query().patchAndFetch(input);
+      await post.$query().patchAndFetch(input);
       return new Response(200, { post });
     },
 
-    deletePost: async (_, { id }: { id: string }, { auth }: IContext) => {
-      const post = await Post.query().findById(id);
-      if (!post) { return HTTP.NOT_FOUND; }
+    deletePost: async (_, {}, { auth, post }: IModelContext) => {
       if (!postPolicy.canAccess('deletePost', auth, post)) { return HTTP.UNAUTHORIZED };
-      if (post) {
-        await post.$query().delete();
-        return HTTP.NO_CONTENT;
-      }
-      return HTTP.NOT_FOUND;
+      await post.$query().delete();
+      return HTTP.NO_CONTENT;
     }
   }
 };

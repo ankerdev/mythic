@@ -4,7 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import { CONFIG } from './config';
 import { resolvers, typeDefs } from './graphql';
-import { jwtMiddleware } from './middleware';
+import { jwtMiddleware, modelBindingMiddleware } from './middleware';
 
 class Application {
   app: express.Express;
@@ -23,6 +23,7 @@ class Application {
     this.app.use(cors(CONFIG.cors));
     this.app.use(bodyParser.json());
     this.app.use(jwtMiddleware.handle);
+    this.app.use(modelBindingMiddleware.handle);
   }
 
   createGraphQLServer(): void {
@@ -36,7 +37,13 @@ class Application {
 
     this.server = new ApolloServer({
       schema,
-      context: ({ res }) => ({ auth: res.locals.auth }),
+      context: ({ res }) => {
+        const { auth, model } = res.locals;
+        return {
+          auth,
+          ...(model ? { [model.name]: model.instance } : {}),
+        };
+      },
     });
 
     this.server.applyMiddleware({ app: this.app });

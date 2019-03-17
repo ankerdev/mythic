@@ -10,6 +10,7 @@ Out of the box, it comes with swell features such as:
 - Apollo Server (GraphQL Implementation) [https://www.apollographql.com/docs/apollo-server/]
 - A basic User model with GraphQL type definitions and resolvers, automatic password hashing on insert/update and login functionality
 - JWT authentication and middleware
+- Resolver model binding (queried models are bound to the context by middleware)
 - Authorization policies
 - CORS
 
@@ -19,8 +20,6 @@ If you like contributing to things and see something you can improve--feel free 
 - Add `refreshAuthenticationToken` mutation
 - Add out-of-the-box support for sockets with Socket.io [https://socket.io/]
 - Allow for more databases in config, e.g. SQLite3 and PostgreSQL (NB. needs to be supported by objection.js and knex)
-- Resolve model in middleware, so it's passed through context to the resolver.
-  - Automatically return 404 if not found.
 - Other cool stuff to make it a better experience 😎
 
 ## How do I use this?

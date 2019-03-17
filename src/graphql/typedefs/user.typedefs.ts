@@ -2,19 +2,19 @@ import { gql } from 'apollo-server-express';
 
 export const userTypeDefs = gql`
   extend type Query {
-    user(id: String!): UserResponse!
+    user(id: ID!): UserResponse!
     users: UsersResponse!
   }
 
   extend type Mutation {
     createUser(input: UserCreateInput!): UserResponse!
     updateUser(input: UserUpdateInput!): UserResponse!
-    deleteUser(id: String!): DeleteUserResponse!
+    deleteUser(id: ID!): DeleteUserResponse!
   }
 
   # Types
   type User {
-    id: String!
+    id: ID!
     first_name: String!
     last_name: String!
     email: String!
@@ -33,7 +33,7 @@ export const userTypeDefs = gql`
   }
 
   input UserUpdateInput {
-    id: String!
+    id: ID!
     first_name: String
     last_name: String
     email: String

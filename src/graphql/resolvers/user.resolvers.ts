@@ -5,14 +5,20 @@ import { User } from '../../models';
 import { userPolicy } from '../../policies';
 import { HTTP } from '../../utils';
 
+interface IInputContext {
+  input: User;
+}
+
+interface IModelContext {
+  auth: User;
+  user: User;
+}
+
 export const userResolvers: IResolverObject = {
   Query: {
-    user: async (_, { id }: { id: string }, { auth }: IContext) => {
-      if (!userPolicy.canAccess('user', auth, id)) { return HTTP.UNAUTHORIZED };
-      const user = await User.query().findById(id);
-      return user
-        ? new Response(200, { user })
-        : HTTP.NOT_FOUND;
+    user: async (_, {}, { auth, user }: IModelContext) => {
+      if (!userPolicy.canAccess('user', auth, user.id)) { return HTTP.UNAUTHORIZED };
+      return new Response(200, { user });
     },
 
     users: async (_, {}, { auth }: IContext) => {
@@ -23,7 +29,7 @@ export const userResolvers: IResolverObject = {
   },
 
   Mutation: {
-    createUser: async (_, { input }: { input: User }, { auth }: IContext) => {
+    createUser: async (_, { input }: IInputContext, { auth }: IContext) => {
       if (!userPolicy.canAccess('createUser', auth)) { return HTTP.UNAUTHORIZED };
       const user = await User.query().insert(input);
       return user
@@ -31,22 +37,16 @@ export const userResolvers: IResolverObject = {
         : new Response(400, { message: 'Failed to create user' });
     },
 
-    updateUser: async (_, { input }: { input: User }, { auth }: IContext) => {
-      if (!userPolicy.canAccess('updateUser', auth, input.id)) { return HTTP.UNAUTHORIZED };
-      const user = await User.query().patchAndFetchById(input.id, input);
-      return user
-        ? new Response(200, { user })
-        : HTTP.NOT_FOUND;
+    updateUser: async (_, { input }: IInputContext, { auth, user }: IModelContext) => {
+      if (!userPolicy.canAccess('updateUser', auth, user.id)) { return HTTP.UNAUTHORIZED };
+      await user.$query().patchAndFetch(input);
+      return new Response(200, { user });
     },
 
-    deleteUser: async (_, { id }: { id: string }, { auth }: IContext) => {
-      if (!userPolicy.canAccess('deleteUser', auth, id)) { return HTTP.UNAUTHORIZED };
-      const user = await User.query().findById(id);
-      if (user) {
-        await user.$query().delete();
-        return HTTP.NO_CONTENT;
-      }
-      return HTTP.NOT_FOUND;
+    deleteUser: async (_, { }, { auth, user }: IModelContext) => {
+      if (!userPolicy.canAccess('deleteUser', auth, user.id)) { return HTTP.UNAUTHORIZED };
+      await user.$query().delete();
+      return HTTP.NO_CONTENT;
     }
   }
 };

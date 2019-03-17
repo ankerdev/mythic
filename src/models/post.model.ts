@@ -9,6 +9,8 @@ export class Post extends BaseModel {
 
   static tableName = 'posts';
 
+  static modelName = 'Post';
+
   static get jsonSchema() {
     return {
       type: 'object',

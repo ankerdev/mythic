@@ -8,8 +8,7 @@ export const getActionForQuery = (query: string): string => {
   return '';
 }
 
-// @IMPROVEMENT This function should get the exact action name instead of using `includes()`
-// It could benefit from a function such as the above, but better.
+// @TODO Use same strategy as modelBindingMiddleware (gql) to get exact action name
 export const isUnauthenticatedAction = (action: string): boolean => {
   return Object
     .values(CONFIG.auth.unauthenticatedActions)

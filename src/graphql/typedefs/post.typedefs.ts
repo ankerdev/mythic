@@ -2,20 +2,20 @@ import { gql } from 'apollo-server-express';
 
 export const postTypeDefs = gql`
   extend type Query {
-    post(id: String!): PostResponse!
+    post(id: ID!): PostResponse!
     posts: PostsResponse!
   }
 
   extend type Mutation {
     createPost(input: PostCreateInput!): PostResponse!
     updatePost(input: PostUpdateInput!): PostResponse!
-    deletePost(id: String!): DeletePostResponse!
+    deletePost(id: ID!): DeletePostResponse!
   }
 
   # Types
   type Post {
-    id: String!
-    user_id: String!
+    id: ID!
+    user_id: ID!
     title: String!
     content: String!
     created_at: String!
@@ -26,13 +26,13 @@ export const postTypeDefs = gql`
 
   # Inputs
   input PostCreateInput {
-    user_id: String!
+    user_id: ID!
     title: String!
     content: String!
   }
 
   input PostUpdateInput {
-    id: String!
+    id: ID!
     title: String
     content: String
   }

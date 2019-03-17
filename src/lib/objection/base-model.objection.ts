@@ -12,6 +12,8 @@ export class BaseModel extends objection.Model {
 
   static softDeletes: boolean = true;
 
+  static modelName: string = 'Model';
+
   // @IMPROVEMENT Use override when merged [https://github.com/Microsoft/TypeScript/issues/2000]
   static QueryBuilder: SoftDeleteQueryBuilder = <unknown>SoftDeleteQueryBuilder as SoftDeleteQueryBuilder;
 

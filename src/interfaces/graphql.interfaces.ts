@@ -1,5 +1,6 @@
 import { User } from '../models';
 
 export interface IContext {
-  auth: User
+  auth: User;
+  [key: string]: unknown;
 }
