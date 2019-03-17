@@ -1,6 +1,6 @@
 import { KeyVal } from '../types';
 
-export class ApiResponse {
+export class Response {
   code: number;
   success: boolean;
   [key: string]: any;

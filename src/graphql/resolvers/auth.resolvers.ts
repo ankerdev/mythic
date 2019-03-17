@@ -1,5 +1,5 @@
 import { IResolverObject } from 'graphql-tools';
-import { ApiResponse } from '../../classes';
+import { Response } from '../../classes';
 import { User } from '../../models';
 import { jwtService } from '../../services';
 
@@ -12,10 +12,10 @@ export const authResolvers: IResolverObject = {
         const { id } = user;
         const token = jwtService.create({ id });
         if (token) {
-          return new ApiResponse(200, { token });
+          return new Response(200, { token });
         }
       }
-      return new ApiResponse(400, { message: 'The email or password is incorrect' });
+      return new Response(400, { message: 'The email or password is incorrect' });
     },
     // refreshAuthenticationToken: () => null, // @TODO
   }

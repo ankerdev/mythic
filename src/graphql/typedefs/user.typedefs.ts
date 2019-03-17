@@ -21,6 +21,7 @@ export const userTypeDefs = gql`
     created_at: String!
     updated_at: String!
     deleted_at: String!
+    posts: [Post]
   }
 
   # Inputs
@@ -51,7 +52,7 @@ export const userTypeDefs = gql`
     code: Int!
     message: String
     success: Boolean!
-    users: [User]!
+    users: [User]
   }
 
   type DeleteUserResponse implements Response {

@@ -1,5 +1,5 @@
 import { IResolverObject } from 'graphql-tools';
-import { ApiResponse } from '../../classes';
+import { Response } from '../../classes';
 import { IContext } from '../../interfaces';
 import { User } from '../../models';
 import { userPolicy } from '../../policies';
@@ -11,14 +11,14 @@ export const userResolvers: IResolverObject = {
       if (!userPolicy.canAccess('user', auth, id)) { return HTTP.UNAUTHORIZED };
       const user = await User.query().findById(id);
       return user
-        ? new ApiResponse(200, { user })
+        ? new Response(200, { user })
         : HTTP.NOT_FOUND;
     },
 
     users: async (_, {}, { auth }: IContext) => {
       if (!userPolicy.canAccess('users', auth)) { return HTTP.UNAUTHORIZED };
       const users = await User.query();
-      return new ApiResponse(200, { users });
+      return new Response(200, { users });
     },
   },
 
@@ -27,15 +27,15 @@ export const userResolvers: IResolverObject = {
       if (!userPolicy.canAccess('createUser', auth)) { return HTTP.UNAUTHORIZED };
       const user = await User.query().insert(input);
       return user
-        ? new ApiResponse(200, { user })
-        : new ApiResponse(400, { message: 'Failed to create user' });
+        ? new Response(200, { user })
+        : new Response(400, { message: 'Failed to create user' });
     },
 
     updateUser: async (_, { input }: { input: User }, { auth }: IContext) => {
       if (!userPolicy.canAccess('updateUser', auth, input.id)) { return HTTP.UNAUTHORIZED };
       const user = await User.query().patchAndFetchById(input.id, input);
       return user
-        ? new ApiResponse(200, { user })
+        ? new Response(200, { user })
         : HTTP.NOT_FOUND;
     },
 

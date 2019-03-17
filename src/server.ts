@@ -1,5 +1,6 @@
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import * as bodyParser from 'body-parser';
+import cors from 'cors';
 import express from 'express';
 import { CONFIG } from './config';
 import { resolvers, typeDefs } from './graphql';
@@ -19,6 +20,7 @@ class Application {
   }
 
   applyExpressMiddleware(): void {
+    this.app.use(cors(CONFIG.cors));
     this.app.use(bodyParser.json());
     this.app.use(jwtMiddleware.handle);
   }

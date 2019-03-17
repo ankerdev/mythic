@@ -1,16 +1,16 @@
 import { Request } from 'express';
-import { ApiResponse } from '../classes';
+import { Response } from '../classes';
 
 interface IHTTP {
-  NO_CONTENT: ApiResponse;
-  NOT_FOUND: ApiResponse;
-  UNAUTHORIZED: ApiResponse;
+  NO_CONTENT: Response;
+  NOT_FOUND: Response;
+  UNAUTHORIZED: Response;
 }
 
 export const HTTP: IHTTP = {
-  NO_CONTENT: new ApiResponse(204),
-  NOT_FOUND: new ApiResponse(404, { message: 'Not found' }),
-  UNAUTHORIZED: new ApiResponse(403, { message: 'Unauthorized' }),
+  NO_CONTENT: new Response(204),
+  NOT_FOUND: new Response(404, { message: 'Not found' }),
+  UNAUTHORIZED: new Response(403, { message: 'Unauthorized' }),
 }
 
 export const retrieveTokenFromHeaders = (req: Request): string => {

@@ -6,7 +6,7 @@ export class Policy {
   }
 
   canAccess(func: string, auth: User, ...args: any): boolean {
-    if (this.before(auth)) {
+    if (auth && this.before(auth)) {
       return true;
     }
 

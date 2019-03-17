@@ -1,5 +1,7 @@
-import { BaseModel } from '../lib/objection';
+import { Model, RelationMappings } from 'objection';
+import { BaseModel, getModelClass } from '../lib/objection';
 import { hashService } from '../services';
+import { Post } from './post.model';
 
 export class User extends BaseModel {
   first_name!: string;
@@ -30,6 +32,27 @@ export class User extends BaseModel {
     };
   }
 
+  static relationMappings: RelationMappings = {
+    posts: {
+      relation: Model.HasManyRelation,
+      modelClass: getModelClass(__dirname, 'post'),
+      join: {
+        from: 'users.id',
+        to: 'posts.user_id'
+      }
+    }
+  }
+
+  /**
+   * Relationships.
+   */
+  async posts() {
+    return await this.$relatedQuery<Post>('posts');
+  }
+
+  /**
+   * Functions.
+   */
   static async attemptLogin(email: string, password: string): Promise<User | null> {
     const user = await this.query().where('email', email).first();
     if (user && await hashService.compare(password, user.password)) {
