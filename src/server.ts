@@ -37,13 +37,7 @@ class Application {
 
     this.server = new ApolloServer({
       schema,
-      context: ({ res }) => {
-        const { auth, model } = res.locals;
-        return {
-          auth,
-          ...(model ? { [model.name]: model.instance } : {}),
-        };
-      },
+      context: ({ res }) => ({ ...res.locals }),
     });
 
     this.server.applyMiddleware({ app: this.app });

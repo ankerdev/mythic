@@ -6,8 +6,8 @@ import { BaseModel } from '../lib';
 class ModelBindingMiddleware {
   handle = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const graphqlQueryObject = gql`${req.body.query}`;
-      const selection = (<any>graphqlQueryObject.definitions[0]).selectionSet.selections[0];
+      const gqlObject = gql`${req.body.query}`;
+      const selection = (<any>gqlObject.definitions[0]).selectionSet.selections[0];
       const { name: { value: action }, arguments: args } = selection;
       const id = this.getIdForFields(args);
       const model = this.getModelForAction(action);
@@ -15,10 +15,7 @@ class ModelBindingMiddleware {
         const { modelName } = model;
         const instance = await model.query().findById(id);
         if (instance) {
-          res.locals.model = {
-            name: modelName.toLowerCase(),
-            instance,
-          };
+          res.locals[modelName.toLowerCase()] = instance;
           return next();
         } else {
           return res
