@@ -2,9 +2,10 @@ import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import * as bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import { CONFIG } from './config';
 import { resolvers, typeDefs } from './graphql';
-import { jwtMiddleware, modelBindingMiddleware } from './middleware';
+import { jwtMiddleware, modelBindingMiddleware, ipRestrictionMiddleware } from './middleware';
 
 class Application {
   app: express.Express;
@@ -12,6 +13,7 @@ class Application {
 
   constructor() {
     this.app = express();
+    this.app.enable('trust proxy');
     this.applyExpressMiddleware();
     this.createGraphQLServer();
     this.app.listen(CONFIG.port, () => {
@@ -20,6 +22,8 @@ class Application {
   }
 
   applyExpressMiddleware(): void {
+    this.app.use(ipRestrictionMiddleware.handle);
+    this.app.use(new rateLimit(CONFIG.rateLimit));
     this.app.use(cors(CONFIG.cors));
     this.app.use(bodyParser.json());
     this.app.use(jwtMiddleware.handle);
