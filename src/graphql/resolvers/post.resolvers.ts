@@ -17,12 +17,12 @@ interface IModelContext {
 export const postResolvers: IResolverObject = {
   Query: {
     post: async (_, {}, { auth, post }: IModelContext) => {
-      if (!postPolicy.canAccess('post', auth, post)) { return HTTP.UNAUTHORIZED };
+      if (!postPolicy.authorize('post', auth, post)) { return HTTP.UNAUTHORIZED };
       return new Response(200, { post });
     },
 
     posts: async (_, {}, { auth }: IContext) => {
-      if (!postPolicy.canAccess('posts', auth)) { return HTTP.UNAUTHORIZED };
+      if (!postPolicy.authorize('posts', auth)) { return HTTP.UNAUTHORIZED };
       const posts = await Post.query();
       return new Response(200, { posts });
     },
@@ -30,7 +30,7 @@ export const postResolvers: IResolverObject = {
 
   Mutation: {
     createPost: async (_, { input }: IInputContext, { auth }: IContext) => {
-      if (!postPolicy.canAccess('createPost', auth)) { return HTTP.UNAUTHORIZED };
+      if (!postPolicy.authorize('createPost', auth)) { return HTTP.UNAUTHORIZED };
       const post = await Post.query().insert(input);
       return post
         ? new Response(200, { post })
@@ -38,13 +38,13 @@ export const postResolvers: IResolverObject = {
     },
 
     updatePost: async (_, { input }: IInputContext, { auth, post }: IModelContext) => {
-      if (!postPolicy.canAccess('updatePost', auth, post)) { return HTTP.UNAUTHORIZED };
+      if (!postPolicy.authorize('updatePost', auth, post)) { return HTTP.UNAUTHORIZED };
       await post.$query().patchAndFetch(input);
       return new Response(200, { post });
     },
 
     deletePost: async (_, {}, { auth, post }: IModelContext) => {
-      if (!postPolicy.canAccess('deletePost', auth, post)) { return HTTP.UNAUTHORIZED };
+      if (!postPolicy.authorize('deletePost', auth, post)) { return HTTP.UNAUTHORIZED };
       await post.$query().delete();
       return HTTP.NO_CONTENT;
     }

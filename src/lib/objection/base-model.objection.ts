@@ -28,7 +28,7 @@ export class BaseModel extends objection.Model {
   }
 
   /**
-   * Hooks.
+   * Lifecycle.
    *
    * @return {void}
    */

@@ -5,6 +5,9 @@ export const getenv = (key: string, fallback?: any): any => {
     ? process.env[key]
     : fallback || '';
 
+  // @TODO Test if it contains alpha char,
+  // If it does, don't convert to number
+
   // Handle numerical value
   const valueAsNum = parseInt(value, 10);
   if (isFinite(valueAsNum) && valueAsNum > 0) {

@@ -10,17 +10,19 @@ class ModelBindingMiddleware {
       const selection = (<any>gqlObject.definitions[0]).selectionSet.selections[0];
       const { name: { value: action }, arguments: args } = selection;
       const id = this.getIdForFields(args);
-      const model = this.getModelForAction(action);
-      if (model) {
-        const { modelName } = model;
-        const instance = await model.query().findById(id);
-        if (instance) {
-          res.locals[modelName.toLowerCase()] = instance;
-          return next();
-        } else {
-          return res
-            .status(404)
-            .json({ message: `${modelName} not found` });
+      if (id) {
+        const model = this.getModelForAction(action);
+        if (model) {
+          const { modelName } = model;
+          const instance = await model.query().findById(id);
+          if (instance) {
+            res.locals[modelName.toLowerCase()] = instance;
+            return next();
+          } else {
+            return res
+              .status(404)
+              .json({ message: `${modelName} not found` });
+          }
         }
       }
     } catch (e) {}

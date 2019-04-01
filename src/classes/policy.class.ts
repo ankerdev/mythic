@@ -5,7 +5,7 @@ export class Policy {
     return auth.is_admin;
   }
 
-  canAccess(func: string, auth: User, ...args: any): boolean {
+  authorize(func: string, auth: User, ...args: any): boolean {
     if (auth && this.before(auth)) {
       return true;
     }

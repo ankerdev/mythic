@@ -2,8 +2,8 @@ import { Policy } from '../classes';
 import { User } from '../models';
 
 class UserPolicy extends Policy {
-  user(auth: User, userId: string): boolean {
-    return auth.id === userId;
+  user(auth: User, user: User): boolean {
+    return auth.id === user.id;
   }
 
   users(): boolean {
@@ -14,12 +14,12 @@ class UserPolicy extends Policy {
     return true;
   }
 
-  updateUser(auth: User, userId: string): boolean {
-    return auth.id === userId;
+  updateUser(auth: User, user: User): boolean {
+    return auth.id === user.id;
   }
 
-  deleteUser(auth: User, userId: string): boolean {
-    return auth.id === userId;
+  deleteUser(auth: User, user: User): boolean {
+    return auth.id === user.id;
   }
 }
 
