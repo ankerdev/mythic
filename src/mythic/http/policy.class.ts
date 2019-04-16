@@ -1,4 +1,5 @@
-import { User } from '../models';
+import { User } from '../../models';
+import { Response } from './response.class';
 
 export class Policy {
   before(auth: User) {
@@ -11,8 +12,10 @@ export class Policy {
     }
 
     const policy: (...args: any) => boolean = (<any>this)[func];
-    return policy
-      ? policy(...[auth, ...args])
-      : false;
+    if (!policy || (policy && !policy(...[auth, ...args]))) {
+      throw Response.UNAUTHORIZED;
+    }
+
+    return true;
   }
 }

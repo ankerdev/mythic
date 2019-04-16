@@ -1,7 +1,7 @@
 import Knex from 'knex';
 import * as objection from 'objection';
 import * as path from 'path';
-import { getenv } from '../utils/env.utils';
+import { getenv } from '../mythic';
 
 export const knexConfig: Knex.Config = {
   client: 'mysql2',

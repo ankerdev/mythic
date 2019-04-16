@@ -1,5 +1,5 @@
 import { SignOptions } from 'jsonwebtoken';
-import { getenv } from '../utils/env.utils';
+import { getenv } from '../mythic';
 
 export interface IJWTConfig {
   secret: string;

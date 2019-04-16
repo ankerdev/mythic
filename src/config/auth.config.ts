@@ -1,4 +1,4 @@
-import { KeyVal } from '../types';
+import { KeyVal } from '../declarations';
 
 export interface IAuthConfig {
   unauthenticatedActions: KeyVal<string[]>;

@@ -1,6 +1,6 @@
 import * as objection from 'objection';
 import { v4 } from 'uuid';
-import { toDBFormat, toISOFormat } from '../../utils';
+import { toDBFormat, toISOFormat } from '../..';
 import { SoftDeleteQueryBuilder } from './soft-delete-query-builder.objection';
 
 // @ts-ignore | @IMPROVEMENT Need to fork objection to make this work properly
@@ -12,6 +12,7 @@ export class BaseModel extends objection.Model {
 
   static softDeletes: boolean = true;
 
+  // @TODO There should be a way to remove this entirely...
   static modelName: string = 'Model';
 
   // @IMPROVEMENT Use override when merged [https://github.com/Microsoft/TypeScript/issues/2000]

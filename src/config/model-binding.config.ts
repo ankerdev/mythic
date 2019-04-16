@@ -1,7 +1,7 @@
 import { IResolverObject } from 'graphql-tools';
 import { postResolvers, userResolvers } from '../graphql';
-import { BaseModel } from '../lib';
 import { Post, User } from '../models';
+import { BaseModel } from '../mythic';
 
 export interface IModelBindingObject {
   model: typeof BaseModel;

@@ -1,5 +1,5 @@
 import { Options as RateLimitOptions } from 'express-rate-limit';
-import { getenv } from '../utils/env.utils';
+import { getenv } from '../mythic';
 
 export const rateLimit: RateLimitOptions = {
   max: getenv('RATE_LIMIT_MAX_REQUESTS', 100),

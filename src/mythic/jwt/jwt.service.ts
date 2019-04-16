@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
-import { CONFIG } from '../config';
-import { JWTClaims } from '../enums';
-import { IJWTPayload } from '../interfaces';
+import { CONFIG } from '../../config';
+import { JWTClaims } from './jwt.enums';
+import { IJWTPayload } from './jwt.interfaces';
 
 class JWTService {
   create(payload: object): string | null {

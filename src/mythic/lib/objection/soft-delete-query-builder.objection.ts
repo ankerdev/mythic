@@ -1,5 +1,5 @@
 import * as objection from 'objection';
-import { toDBFormat } from '../../utils';
+import { toDBFormat } from '../..';
 import { BaseModel } from './base-model.objection';
 
 // @IMPROVEMENT Fork objection to add typings to added functions, such as restore() and withTrashed()

@@ -1,4 +1,4 @@
-import { Policy } from '../classes';
+import { Policy } from '../mythic';
 import { User } from '../models';
 
 class UserPolicy extends Policy {

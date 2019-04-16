@@ -1,5 +1,5 @@
 import { Model, RelationMappings } from 'objection';
-import { BaseModel, getModelClass } from '../lib/objection';
+import { BaseModel, getModelClass } from '../mythic';
 import { User } from './user.model';
 
 export class Post extends BaseModel {

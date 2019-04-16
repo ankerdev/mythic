@@ -1,7 +1,6 @@
 import { IResolverObject } from 'graphql-tools';
-import { Response } from '../../classes';
 import { User } from '../../models';
-import { jwtService } from '../../services';
+import { jwtService, Response } from '../../mythic';
 
 export const authResolvers: IResolverObject = {
   Mutation: {

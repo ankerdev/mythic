@@ -1,7 +1,7 @@
 import { CorsOptions } from 'cors';
 import { Options as RateLimitOptions } from 'express-rate-limit';
 import * as Knex from 'knex';
-import { getenv } from '../utils/env.utils';
+import { getenv } from '../mythic';
 import { IAuthConfig, auth } from './auth.config';
 import { cors } from './cors.config';
 import { IIPRestrictionConfig, ipRestriction } from './ip-restriction.config';

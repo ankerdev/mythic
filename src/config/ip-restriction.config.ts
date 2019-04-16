@@ -1,4 +1,4 @@
-import { getenv } from '../utils/env.utils';
+import { getenv } from '../mythic';
 
 export interface IIPRestrictionConfig {
   trustedIps: string[];
