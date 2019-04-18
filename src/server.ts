@@ -5,7 +5,7 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import { CONFIG } from './config';
 import { resolvers, typeDefs } from './graphql';
-import { jwtMiddleware, modelBindingMiddleware, ipRestrictionMiddleware } from './middleware';
+import { ipRestrictionMiddleware, jwtMiddleware, modelBindingMiddleware } from './mythic';
 
 class Application {
   app: express.Express;

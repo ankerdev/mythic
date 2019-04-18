@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-express';
 import { Request, Response, NextFunction } from 'express';
-import { CONFIG } from '../config';
-import { BaseModel } from '../lib';
+import { CONFIG } from '../../config';
+import { BaseModel } from '..';
 
 class ModelBindingMiddleware {
   handle = async (req: Request, res: Response, next: NextFunction) => {

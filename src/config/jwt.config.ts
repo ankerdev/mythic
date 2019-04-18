@@ -1,5 +1,5 @@
+import { env } from 'env';
 import { SignOptions } from 'jsonwebtoken';
-import { getenv } from '../utils/env.utils';
 
 export interface IJWTConfig {
   secret: string;
@@ -7,9 +7,9 @@ export interface IJWTConfig {
 }
 
 export const jwt: IJWTConfig = {
-  secret: getenv('JWT_SECRET'),
+  secret: env('JWT_SECRET'),
   options: {
     algorithm: 'HS256',
-    expiresIn: getenv('JWT_EXPIRES_IN', '30m'),
+    expiresIn: env('JWT_EXPIRES_IN', '30m'),
   },
 };

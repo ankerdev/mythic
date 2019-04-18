@@ -1,9 +1,9 @@
-import { getenv } from '../utils/env.utils';
+import { env } from 'env';
 
 export interface IIPRestrictionConfig {
   trustedIps: string[];
 }
 
 export const ipRestriction: IIPRestrictionConfig = {
-  trustedIps: getenv('TRUSTED_IPS', '*').replace(/\s/, '').split(','),
+  trustedIps: env('TRUSTED_IPS', '*').replace(/\s/, '').split(','),
 };

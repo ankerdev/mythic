@@ -1,6 +1,5 @@
 import { Model, RelationMappings } from 'objection';
-import { BaseModel, getModelClass } from '../lib/objection';
-import { hashService } from '../services';
+import { BaseModel, getModelClass, hashService } from '../mythic';
 import { Post } from './post.model';
 
 export class User extends BaseModel {

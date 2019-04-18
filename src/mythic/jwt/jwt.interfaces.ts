@@ -1,4 +1,4 @@
-import { JWTClaims } from '../enums';
+import { JWTClaims } from './jwt.enums';
 
 export interface IJWTPayload {
   id: string;

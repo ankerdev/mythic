@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../models';
-import { jwtService } from '../services';
-import { isUnauthenticatedAction, retrieveTokenFromHeaders } from '../utils';
+import { CONFIG } from '../../config';
+import { User } from '../../models';
+import { retrieveTokenFromHeaders } from '../utils';
+import { jwtService } from './jwt.service';
 
 class JWTMiddleware {
   handle = async (req: Request, res: Response, next: NextFunction) => {
-    if (isUnauthenticatedAction(req.body.query)) {
+    if (this.isUnauthenticatedAction(req.body.query)) {
       return next();
     }
 
@@ -24,6 +25,14 @@ class JWTMiddleware {
     return res
       .status(401)
       .json({ message: 'Unauthenticated' });
+  }
+
+  // @TODO Use same strategy as modelBindingMiddleware (gql) to get exact action name
+  private isUnauthenticatedAction(action: string) {
+    return Object
+      .values(CONFIG.auth.unauthenticatedActions)
+      .flat()
+      .some(unauthenticatedAction => action.includes(unauthenticatedAction));
   }
 }
 

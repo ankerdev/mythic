@@ -1,4 +1,4 @@
-import { Policy } from '../classes';
+import { Policy } from '../mythic';
 import { Post, User } from '../models';
 
 class PostPolicy extends Policy {

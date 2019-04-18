@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 
+// @TODO Make this not a service?
 class Hash {
   static SALT_ROUNDS: number = 10;
 

@@ -1,7 +1,7 @@
 import { CorsOptions } from 'cors';
-import { getenv } from '../utils/env.utils';
+import { env } from 'env';
 
 export const cors: CorsOptions = {
-  origin: getenv('CORS_ALLOW_ORIGIN', '*'),
+  origin: env('CORS_ALLOW_ORIGIN', '*'),
   optionsSuccessStatus: 200,
 };
