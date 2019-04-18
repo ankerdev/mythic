@@ -1,7 +1,7 @@
 import { CorsOptions } from 'cors';
+import { env } from 'env';
 import { Options as RateLimitOptions } from 'express-rate-limit';
 import * as Knex from 'knex';
-import { getenv } from '../mythic';
 import { IAuthConfig, auth } from './auth.config';
 import { cors } from './cors.config';
 import { IIPRestrictionConfig, ipRestriction } from './ip-restriction.config';
@@ -22,7 +22,7 @@ interface IConfig {
 }
 
 export const CONFIG: IConfig = {
-  port: getenv('HTTP_PORT', 8000),
+  port: env('HTTP_PORT', 8000),
   auth,
   cors,
   ipRestriction,
