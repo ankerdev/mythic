@@ -3,7 +3,7 @@ import { Post, User } from '../models';
 
 class PostPolicy extends Policy {
   post(auth: User, post: Post): boolean {
-    return auth.id === post.user_id;
+    return auth.id === post.userId;
   }
 
   posts(): boolean {
@@ -15,11 +15,11 @@ class PostPolicy extends Policy {
   }
 
   updatePost(auth: User, post: Post): boolean {
-    return auth.id === post.user_id;
+    return auth.id === post.userId;
   }
 
   deletePost(auth: User, post: Post): boolean {
-    return auth.id === post.user_id;
+    return auth.id === post.userId;
   }
 }
 

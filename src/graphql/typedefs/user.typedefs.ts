@@ -2,62 +2,52 @@ import { gql } from 'apollo-server-express';
 
 export const userTypeDefs = gql`
   extend type Query {
-    user(id: ID!): UserResponse!
-    users: UsersResponse!
+    user(id: ID!): User
+    users(
+      first: Int,
+      last: Int,
+      after: String,
+      before: String
+    ): UserConnection!
   }
 
   extend type Mutation {
-    createUser(input: UserCreateInput!): UserResponse!
-    updateUser(input: UserUpdateInput!): UserResponse!
-    deleteUser(id: ID!): DeleteUserResponse!
+    createUser(input: UserInput!): User
+    updateUser(input: UserInput!): User
+    deleteUser(id: ID!): ID!
   }
 
-  # Types
-  type User {
-    id: ID!
-    first_name: String!
-    last_name: String!
-    email: String!
-    created_at: String!
-    updated_at: String!
-    deleted_at: String!
-    posts: [Post]
-  }
-
-  # Inputs
-  input UserCreateInput {
-    first_name: String!
-    last_name: String!
-    email: String!
-    password: String!
-  }
-
-  input UserUpdateInput {
-    id: ID!
-    first_name: String
-    last_name: String
+  input UserInput {
+    id: ID
+    firstName: String
+    lastName: String
     email: String
     password: String
   }
 
-  # Responses
-  type UserResponse implements Response {
-    code: Int!
-    message: String
-    success: Boolean!
-    user: User
+  type User implements INode {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    createdAt: String!
+    updatedAt: String!
+    deletedAt: String!
+    posts(
+      first: Int,
+      last: Int,
+      after: String,
+      before: String
+    ): PostConnection!
   }
 
-  type UsersResponse implements Response {
-    code: Int!
-    message: String
-    success: Boolean!
-    users: [User]
+  type UserEdge implements IEdge {
+    cursor: String!
+    node: User!
   }
 
-  type DeleteUserResponse implements Response {
-    code: Int!
-    message: String
-    success: Boolean!
+  type UserConnection implements IConnection {
+    edges: [UserEdge!]!
+    pageInfo: PageInfo!
   }
 `;

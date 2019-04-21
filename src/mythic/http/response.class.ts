@@ -1,5 +1,6 @@
 import { KeyVal } from '../../declarations';
 
+// @TODO Remove this?
 export class Response {
   code: number;
   success: boolean;

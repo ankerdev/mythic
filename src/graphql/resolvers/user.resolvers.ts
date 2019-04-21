@@ -1,10 +1,10 @@
 import { IResolverObject } from 'graphql-tools';
-import { IContext } from '../../declarations';
-import { User } from '../../models';
-import { Response } from '../../mythic';
+import { IConnectionParameters, IConnection, IContext } from '../../declarations';
+import { Post, User } from '../../models';
+import { toConnectionObject } from '../../mythic';
 import { userPolicy } from '../../policies';
 
-interface IInputContext {
+interface IInput {
   input: User;
 }
 
@@ -15,37 +15,46 @@ interface IModelContext {
 
 export const userResolvers: IResolverObject = {
   Query: {
-    user: async (_, {}, { auth, user }: IModelContext) => {
+    user: (_, {}, { auth, user }: IModelContext): User => {
       userPolicy.authorize('user', auth, user);
-      return new Response(200, { user });
+      return user;
     },
 
-    users: async (_, {}, { auth }: IContext) => {
+    users: async (_, connectionParams: IConnectionParameters, { auth }: IContext): Promise<IConnection<User>> => {
       userPolicy.authorize('users', auth);
-      const users = await User.query();
-      return new Response(200, { users });
+      // @TODO Make paginate return [users, hasNextPage, hasPreviousPage] so I can pass it to toConnectionObject()
+      const users = await User.paginate(connectionParams);
+      return toConnectionObject<User>(users);
     },
   },
 
   Mutation: {
-    createUser: async (_, { input }: IInputContext, { auth }: IContext) => {
+    createUser: async (_, { input }: IInput, { auth }: IContext): Promise<User> => {
       userPolicy.authorize('createUser', auth);
+      User.validate(input);
       const user = await User.query().insert(input);
-      return user
-        ? new Response(200, { user })
-        : new Response(400, { message: 'Failed to create user' });
+      return user;
     },
 
-    updateUser: async (_, { input }: IInputContext, { auth, user }: IModelContext) => {
+    updateUser: async (_, { input }: IInput, { auth, user }: IModelContext): Promise<User> => {
       userPolicy.authorize('updateUser', auth, user);
+      User.validateUpdate(input);
       await user.$query().patchAndFetch(input);
-      return new Response(200, { user });
+      // @TODO Has this actually updated by now?
+      return user;
     },
 
-    deleteUser: async (_, { }, { auth, user }: IModelContext) => {
+    deleteUser: async (_, {}, { auth, user }: IModelContext): Promise<string> => {
       userPolicy.authorize('deleteUser', auth, user);
       await user.$query().delete();
-      return Response.NO_CONTENT;
+      return user.id;
+    },
+  },
+
+  User: {
+    posts: async (user: User): Promise<IConnection<Post>> => {
+      // @TODO Finish this as connection with params
+      return toConnectionObject<Post>(await user.posts());
     }
   }
 };

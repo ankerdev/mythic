@@ -1,29 +1,30 @@
 import { Model, RelationMappings } from 'objection';
-import { BaseModel, getModelClass } from '../mythic';
+import { BaseModel, getModelClass, stringType, uuidType } from '../mythic';
 import { User } from './user.model';
 
 export class Post extends BaseModel {
-  user_id!: string;
+  userId!: string;
   title!: string;
   content!: string;
 
-  static tableName = 'posts';
-
   static modelName = 'Post';
+
+  static tableName = 'posts';
 
   static get jsonSchema() {
     return {
       type: 'object',
       required: [
+        'userId',
         'title',
         'content',
       ],
       properties: {
-        id: { type: 'string' },
-        user_id: { type: 'string' },
-        title: { type: 'string', minLength: 1, maxLength: 255 },
-        content: { type: 'string', minLength: 1, maxLength: 255 },
-      }
+        id: uuidType,
+        userId: uuidType,
+        title: stringType,
+        content: stringType,
+      },
     };
   }
 
@@ -32,7 +33,7 @@ export class Post extends BaseModel {
       relation: Model.BelongsToOneRelation,
       modelClass: getModelClass(__dirname, 'user'),
       join: {
-        from: 'posts.user_id',
+        from: 'posts.userId',
         to: 'users.id'
       }
     }
@@ -40,10 +41,8 @@ export class Post extends BaseModel {
 
   /**
    * Relationships.
-   *
-   * @return {Model | Model[]}
    */
-  async user() {
+  async user(): Promise<User[]> {
     return await this.$relatedQuery<User>('user');
   }
 }

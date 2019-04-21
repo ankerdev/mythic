@@ -2,59 +2,46 @@ import { gql } from 'apollo-server-express';
 
 export const postTypeDefs = gql`
   extend type Query {
-    post(id: ID!): PostResponse!
-    posts: PostsResponse!
+    post(id: ID!): Post
+    posts(
+      first: Int,
+      last: Int,
+      after: String,
+      before: String
+    ): PostConnection!
   }
 
   extend type Mutation {
-    createPost(input: PostCreateInput!): PostResponse!
-    updatePost(input: PostUpdateInput!): PostResponse!
-    deletePost(id: ID!): DeletePostResponse!
+    createPost(input: PostInput!): Post!
+    updatePost(input: PostInput!): Post!
+    deletePost(id: ID!): ID!
   }
 
-  # Types
-  type Post {
-    id: ID!
-    user_id: ID!
-    title: String!
-    content: String!
-    created_at: String!
-    updated_at: String!
-    deleted_at: String!
-    user: User
-  }
-
-  # Inputs
-  input PostCreateInput {
-    user_id: ID!
-    title: String!
-    content: String!
-  }
-
-  input PostUpdateInput {
-    id: ID!
+  input PostInput {
+    id: ID
+    userId: ID
     title: String
     content: String
   }
 
-  # Responses
-  type PostResponse implements Response {
-    code: Int!
-    message: String
-    success: Boolean!
-    post: Post
+  type Post implements INode {
+    id: ID!
+    userId: ID!
+    title: String!
+    content: String!
+    user: User!
+    createdAt: String!
+    updatedAt: String!
+    deletedAt: String!
   }
 
-  type PostsResponse implements Response {
-    code: Int!
-    message: String
-    success: Boolean!
-    posts: [Post]!
+  type PostEdge implements IEdge {
+    cursor: String!
+    node: Post!
   }
 
-  type DeletePostResponse implements Response {
-    code: Int!
-    message: String
-    success: Boolean!
+  type PostConnection implements IConnection {
+    edges: [PostEdge!]!
+    pageInfo: PageInfo!
   }
 `;

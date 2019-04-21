@@ -3,6 +3,7 @@ import { env } from 'env';
 import * as objection from 'objection';
 import * as path from 'path';
 
+// @TODO Add ability to use postgres through env
 export const knexConfig: Knex.Config = {
   client: 'mysql2',
   connection: {

@@ -1,35 +1,38 @@
-import { Model, RelationMappings } from 'objection';
-import { BaseModel, getModelClass, hashService } from '../mythic';
+import { Model, RelationMappings, JsonSchema } from 'objection';
+import { BaseModel, getModelClass, hashService, stringType, createStringType, uuidPkType } from '../mythic';
 import { Post } from './post.model';
 
 export class User extends BaseModel {
-  first_name!: string;
-  last_name!: string;
+  firstName!: string;
+  lastName!: string;
   email!: string;
   password!: string;
-  is_admin!: boolean;
-
-  static tableName = 'users';
+  isAdmin!: boolean;
 
   static modelName = 'User';
 
-  static get jsonSchema() {
+  static tableName = 'users';
+
+  static get jsonSchema(): JsonSchema {
     return {
       type: 'object',
       required: [
-        'first_name',
-        'last_name',
+        'firstName',
+        'lastName',
         'email',
         'password'
       ],
       properties: {
-        id: { type: 'string' },
-        first_name: { type: 'string', minLength: 1, maxLength: 255 },
-        last_name: { type: 'string', minLength: 1, maxLength: 255 },
-        email: { type: 'string', format: 'email', minLength: 1, maxLength: 255 },
-        password: { type: 'string', minLength: 1, maxLength: 255 },
-        is_admin: { type: 'boolean' },
-      }
+        id: uuidPkType,
+        firstName: stringType,
+        lastName: stringType,
+        email: {
+          format: 'email',
+          ...stringType,
+        },
+        password: createStringType(6, 255),
+        isAdmin: { type: 'boolean' },
+      },
     };
   }
 
@@ -39,15 +42,15 @@ export class User extends BaseModel {
       modelClass: getModelClass(__dirname, 'post'),
       join: {
         from: 'users.id',
-        to: 'posts.user_id'
-      }
-    }
-  }
+        to: 'posts.userId'
+      },
+    },
+  };
 
   /**
    * Relationships.
    */
-  async posts() {
+  async posts(): Promise<Post[]> {
     return await this.$relatedQuery<Post>('posts');
   }
 
@@ -62,12 +65,15 @@ export class User extends BaseModel {
     return null;
   }
 
-  async $beforeInsert() {
+  /**
+   * Lifecycle.
+   */
+  async $beforeInsert(): Promise<void> {
     super.$beforeInsert();
     this.password = await hashService.make(this.password);
   }
 
-  async $beforeUpdate() {
+  async $beforeUpdate(): Promise<void> {
     super.$beforeUpdate();
     if (this.password) {
       this.password = await hashService.make(this.password);
