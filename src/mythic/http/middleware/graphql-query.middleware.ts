@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { extractDataForQuery } from '../utils';
+import { extractDataForQuery } from '../..';
 
 class GraphQLQueryMiddleware {
   handle = async (req: Request, res: Response, next: NextFunction) => {

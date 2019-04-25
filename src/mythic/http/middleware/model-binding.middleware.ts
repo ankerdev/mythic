@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { CONFIG } from '../../config';
-import { BaseModel } from '..';
+import { CONFIG } from '../../../config';
+import { BaseModel } from '../..';
 
 class ModelBindingMiddleware {
   handle = async (_req: Request, res: Response, next: NextFunction) => {

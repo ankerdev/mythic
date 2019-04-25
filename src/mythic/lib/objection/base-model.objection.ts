@@ -2,11 +2,11 @@ import Ajv from 'ajv';
 import { UserInputError } from 'apollo-server-core';
 import * as objection from 'objection';
 import { v4 } from 'uuid';
-import { IConnectionParameters, KeyVal } from '../../../declarations';
+import { IConnectionParameters, KeyVal, GraphQLPaginationArray } from '../../../declarations';
 import { toDBFormat, toISOFormat } from '../..';
 import { SoftDeleteQueryBuilder } from './soft-delete-query-builder.objection';
+import { performPaginationForBuilder } from './utils.objection';
 
-// @TODO This file needs cleanup
 // @ts-ignore | @IMPROVEMENT Need to fork objection to make this work properly
 export class BaseModel extends objection.Model {
   id!: string;
@@ -28,33 +28,6 @@ export class BaseModel extends objection.Model {
     };
   }
 
-  static async paginate(connectionParams: IConnectionParameters): Promise<BaseModel[]> {
-    let {
-      first,
-      last,
-      before,
-      after,
-    } = connectionParams;
-
-    // @TODO Finish this
-
-    // Check for parameter errors
-    if (first && last) {
-      throw new UserInputError('Cannot use both first and last parameter');
-    } else if (before && after) {
-      throw new UserInputError('Cannot use both before and after parameter');
-    }
-
-    let query = this.query();
-
-    // @TODO Build query based on parameters
-
-    // @TODO Sort by cursor, if it exists
-    // query = query.where('createdAt', '>', toDBFormat(atob(before)));
-
-    return await query;
-  }
-
   /**
    * Validation.
    */
@@ -73,6 +46,17 @@ export class BaseModel extends objection.Model {
 
   static validateUpdate(input: KeyVal<any>): void {
     this.performValidation(this.updateJsonSchema, input);
+  }
+
+  /**
+   * Pagination.
+   */
+  static paginate(connectionParams: IConnectionParameters): Promise<GraphQLPaginationArray<BaseModel>> {
+    return performPaginationForBuilder(this.query(), connectionParams);
+  }
+
+  paginate(connectionParams: IConnectionParameters, relation: string): Promise<GraphQLPaginationArray<BaseModel>> {
+    return performPaginationForBuilder(this.$relatedQuery(relation), connectionParams);
   }
 
   /**

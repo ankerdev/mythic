@@ -1,10 +1,10 @@
 import { IResolverObject } from 'graphql-tools';
-import { IConnectionParameters, IConnection, IContext } from '../../declarations';
+import { IConnection, IConnectionParameters, IContext } from '../../declarations';
 import { Post, User } from '../../models';
 import { toConnectionObject } from '../../mythic';
 import { userPolicy } from '../../policies';
 
-interface IInput {
+interface IArguments {
   input: User;
 }
 
@@ -22,26 +22,25 @@ export const userResolvers: IResolverObject = {
 
     users: async (_, connectionParams: IConnectionParameters, { auth }: IContext): Promise<IConnection<User>> => {
       userPolicy.authorize('users', auth);
-      // @TODO Make paginate return [users, hasNextPage, hasPreviousPage] so I can pass it to toConnectionObject()
-      const users = await User.paginate(connectionParams);
-      return toConnectionObject<User>(users);
+      return toConnectionObject<User>(
+        ...(await User.paginate(connectionParams))
+      );
     },
   },
 
   Mutation: {
-    createUser: async (_, { input }: IInput, { auth }: IContext): Promise<User> => {
+    createUser: async (_, { input }: IArguments, { auth }: IContext): Promise<User> => {
       userPolicy.authorize('createUser', auth);
       User.validate(input);
       const user = await User.query().insert(input);
       return user;
     },
 
-    updateUser: async (_, { input }: IInput, { auth, user }: IModelContext): Promise<User> => {
+    updateUser: async (_, { input }: IArguments, { auth, user }: IModelContext): Promise<User> => {
       userPolicy.authorize('updateUser', auth, user);
       User.validateUpdate(input);
-      await user.$query().patchAndFetch(input);
-      // @TODO Has this actually updated by now?
-      return user;
+      const updatedUser = await user.$query().patchAndFetch(input);
+      return updatedUser;
     },
 
     deleteUser: async (_, {}, { auth, user }: IModelContext): Promise<string> => {
@@ -52,9 +51,10 @@ export const userResolvers: IResolverObject = {
   },
 
   User: {
-    posts: async (user: User): Promise<IConnection<Post>> => {
-      // @TODO Finish this as connection with params
-      return toConnectionObject<Post>(await user.posts());
+    posts: async (user: User, connectionParams: IConnectionParameters): Promise<IConnection<Post>> => {
+      return toConnectionObject<Post>(
+        ...(await user.paginate(connectionParams, 'posts'))
+      );
     }
   }
 };

@@ -1,5 +1,5 @@
 import { Model, RelationMappings, JsonSchema } from 'objection';
-import { BaseModel, getModelClass, hashService, stringType, createStringType, uuidPkType } from '../mythic';
+import { BaseModel, createStringType, getModelClass, Hash, stringType, uuidPkType } from '../mythic';
 import { Post } from './post.model';
 
 export class User extends BaseModel {
@@ -59,7 +59,7 @@ export class User extends BaseModel {
    */
   static async attemptLogin(email: string, password: string): Promise<User | null> {
     const user = await this.query().where('email', email).first();
-    if (user && await hashService.compare(password, user.password)) {
+    if (user && await Hash.compare(password, user.password)) {
       return user;
     }
     return null;
@@ -70,13 +70,13 @@ export class User extends BaseModel {
    */
   async $beforeInsert(): Promise<void> {
     super.$beforeInsert();
-    this.password = await hashService.make(this.password);
+    this.password = await Hash.make(this.password);
   }
 
   async $beforeUpdate(): Promise<void> {
     super.$beforeUpdate();
     if (this.password) {
-      this.password = await hashService.make(this.password);
+      this.password = await Hash.make(this.password);
     }
   }
 }

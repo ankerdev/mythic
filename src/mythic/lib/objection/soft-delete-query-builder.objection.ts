@@ -38,7 +38,7 @@ export class SoftDeleteQueryBuilder extends objection.Model.QueryBuilder<BaseMod
       this.mergeContext({ restore: true });
       return super.patch({ [this.deletedAtAttr]: null });
     }
-    return super.patch({}); // @TODO Is this necesarry?
+    return super.patch({}); // @IMPROVEMENT I _could_ void here, but meh
   }
 
   get baseModelClass() {

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { CONFIG } from '../../config';
+import { CONFIG } from '../../../config';
 
 class IPRestrictionMiddleware {
   handle = async (req: Request, res: Response, next: NextFunction) => {
