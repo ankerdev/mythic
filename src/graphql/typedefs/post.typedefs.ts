@@ -32,7 +32,7 @@ export const postTypeDefs = gql`
     user: User!
     createdAt: String!
     updatedAt: String!
-    deletedAt: String!
+    deletedAt: String
   }
 
   type PostEdge implements IEdge {

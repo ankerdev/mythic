@@ -2,7 +2,7 @@ import Ajv from 'ajv';
 import { UserInputError } from 'apollo-server-core';
 import * as objection from 'objection';
 import { v4 } from 'uuid';
-import { IConnectionParameters, KeyVal, GraphQLPaginationArray } from '../../../declarations';
+import { Dates, IConnectionParameters, KeyVal, GraphQLPaginationArray } from '../../../declarations';
 import { toDBFormat, toISOFormat } from '../..';
 import { SoftDeleteQueryBuilder } from './soft-delete-query-builder.objection';
 import { performPaginationForBuilder } from './utils.objection';
@@ -12,7 +12,7 @@ export class BaseModel extends objection.Model {
   id!: string;
   createdAt!: string;
   updatedAt!: string;
-  deletedAt!: string;
+  deletedAt!: string | null;
 
   static softDeletes: boolean = true;
 
@@ -67,9 +67,12 @@ export class BaseModel extends objection.Model {
   }
 
   private formatDatesOnRetrieval(): void {
-    this.createdAt = toISOFormat(new Date(this.createdAt));
-    this.updatedAt = toISOFormat(new Date(this.updatedAt));
-    this.deletedAt = toISOFormat(new Date(this.deletedAt));
+    const dateKeys: Dates[] = ['createdAt', 'updatedAt', 'deletedAt'];
+    dateKeys.forEach(key => {
+      if (this[key]) {
+        this[key] = toISOFormat(new Date(this.createdAt));
+      }
+    });
   }
 
   /**

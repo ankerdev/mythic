@@ -32,7 +32,7 @@ export const userTypeDefs = gql`
     email: String!
     createdAt: String!
     updatedAt: String!
-    deletedAt: String!
+    deletedAt: String
     posts(
       first: Int,
       last: Int,
