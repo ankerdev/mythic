@@ -6,7 +6,7 @@ import { jwtService } from './jwt.service';
 
 class JWTMiddleware {
   handle = async (req: Request, res: Response, next: NextFunction) => {
-    if (this.isUnauthenticatedAction(req.body.query)) {
+    if (this.isUnauthenticatedOperation(res.locals.queryData.operationName)) {
       return next();
     }
 
@@ -27,12 +27,11 @@ class JWTMiddleware {
       .json({ message: 'Unauthenticated' });
   }
 
-  // @TODO Use same strategy as modelBindingMiddleware (gql) to get exact action name
-  private isUnauthenticatedAction(action: string) {
+  private isUnauthenticatedOperation(operation: string) {
     return Object
-      .values(CONFIG.auth.unauthenticatedActions)
+      .values(CONFIG.auth.unauthenticatedOperations)
       .flat()
-      .some(unauthenticatedAction => action.includes(unauthenticatedAction));
+      .some(unauthenticatedOperation => operation === unauthenticatedOperation);
   }
 }
 

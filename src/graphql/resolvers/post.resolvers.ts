@@ -1,10 +1,10 @@
 import { IResolverObject } from 'graphql-tools';
-import { IContext } from '../../declarations';
+import { IConnectionParameters, IConnection, IContext } from '../../declarations';
 import { Post, User } from '../../models';
-import { Response } from '../../mythic';
+import { toConnectionObject } from '../../mythic';
 import { postPolicy } from '../../policies';
 
-interface IInputContext {
+interface IArguments {
   input: Post;
 }
 
@@ -15,37 +15,38 @@ interface IModelContext {
 
 export const postResolvers: IResolverObject = {
   Query: {
-    post: async (_, {}, { auth, post }: IModelContext) => {
+    post: (_, {}, { auth, post }: IModelContext): Post => {
       postPolicy.authorize('post', auth, post);
-      return new Response(200, { post });
+      return post;
     },
 
-    posts: async (_, {}, { auth }: IContext) => {
+    posts: async (_, connectionParams: IConnectionParameters, { auth }: IContext): Promise<IConnection<Post>> => {
       postPolicy.authorize('posts', auth);
-      const posts = await Post.query();
-      return new Response(200, { posts });
+      return toConnectionObject<Post>(
+        ...(await Post.paginate(connectionParams))
+      );
     },
   },
 
   Mutation: {
-    createPost: async (_, { input }: IInputContext, { auth }: IContext) => {
+    createPost: async (_, { input }: IArguments, { auth }: IContext): Promise<Post> => {
       postPolicy.authorize('createPost', auth);
+      Post.validate(input);
       const post = await Post.query().insert(input);
-      return post
-        ? new Response(200, { post })
-        : new Response(400, { message: 'Failed to create post' });
+      return post;
     },
 
-    updatePost: async (_, { input }: IInputContext, { auth, post }: IModelContext) => {
+    updatePost: async (_, { input }: IArguments, { auth, post }: IModelContext): Promise<Post> => {
       postPolicy.authorize('updatePost', auth, post);
-      await post.$query().patchAndFetch(input);
-      return new Response(200, { post });
+      Post.validateUpdate(input);
+      const updatedPost = await post.$query().patchAndFetch(input);
+      return updatedPost;
     },
 
-    deletePost: async (_, {}, { auth, post }: IModelContext) => {
+    deletePost: async (_, {}, { auth, post }: IModelContext): Promise<string> => {
       postPolicy.authorize('deletePost', auth, post);
       await post.$query().delete();
-      return Response.NO_CONTENT;
-    }
-  }
+      return post.id;
+    },
+  },
 };

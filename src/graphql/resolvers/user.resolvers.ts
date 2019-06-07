@@ -1,10 +1,10 @@
 import { IResolverObject } from 'graphql-tools';
-import { IContext } from '../../declarations';
-import { User } from '../../models';
-import { Response } from '../../mythic';
+import { IConnection, IConnectionParameters, IContext } from '../../declarations';
+import { Post, User } from '../../models';
+import { toConnectionObject } from '../../mythic';
 import { userPolicy } from '../../policies';
 
-interface IInputContext {
+interface IArguments {
   input: User;
 }
 
@@ -15,37 +15,46 @@ interface IModelContext {
 
 export const userResolvers: IResolverObject = {
   Query: {
-    user: async (_, {}, { auth, user }: IModelContext) => {
+    user: (_, {}, { auth, user }: IModelContext): User => {
       userPolicy.authorize('user', auth, user);
-      return new Response(200, { user });
+      return user;
     },
 
-    users: async (_, {}, { auth }: IContext) => {
+    users: async (_, connectionParams: IConnectionParameters, { auth }: IContext): Promise<IConnection<User>> => {
       userPolicy.authorize('users', auth);
-      const users = await User.query();
-      return new Response(200, { users });
+      return toConnectionObject<User>(
+        ...(await User.paginate(connectionParams))
+      );
     },
   },
 
   Mutation: {
-    createUser: async (_, { input }: IInputContext, { auth }: IContext) => {
+    createUser: async (_, { input }: IArguments, { auth }: IContext): Promise<User> => {
       userPolicy.authorize('createUser', auth);
+      User.validate(input);
       const user = await User.query().insert(input);
-      return user
-        ? new Response(200, { user })
-        : new Response(400, { message: 'Failed to create user' });
+      return user;
     },
 
-    updateUser: async (_, { input }: IInputContext, { auth, user }: IModelContext) => {
+    updateUser: async (_, { input }: IArguments, { auth, user }: IModelContext): Promise<User> => {
       userPolicy.authorize('updateUser', auth, user);
-      await user.$query().patchAndFetch(input);
-      return new Response(200, { user });
+      User.validateUpdate(input);
+      const updatedUser = await user.$query().patchAndFetch(input);
+      return updatedUser;
     },
 
-    deleteUser: async (_, { }, { auth, user }: IModelContext) => {
+    deleteUser: async (_, {}, { auth, user }: IModelContext): Promise<string> => {
       userPolicy.authorize('deleteUser', auth, user);
       await user.$query().delete();
-      return Response.NO_CONTENT;
+      return user.id;
+    },
+  },
+
+  User: {
+    posts: async (user: User, connectionParams: IConnectionParameters): Promise<IConnection<Post>> => {
+      return toConnectionObject<Post>(
+        ...(await user.paginate(connectionParams, 'posts'))
+      );
     }
   }
 };

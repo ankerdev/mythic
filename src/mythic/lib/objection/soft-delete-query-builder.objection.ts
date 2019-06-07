@@ -4,7 +4,7 @@ import { BaseModel } from './base-model.objection';
 
 // @IMPROVEMENT Fork objection to add typings to added functions, such as restore() and withTrashed()
 export class SoftDeleteQueryBuilder extends objection.Model.QueryBuilder<BaseModel> {
-  deletedAtAttr: string = 'deleted_at';
+  deletedAtAttr: string = 'deletedAt';
 
   constructor(modelClass: typeof BaseModel) {
     // @ts-ignore | @READ objection.js' typings doesn't allow QueryBuilder's constructor to pass model class
@@ -38,7 +38,7 @@ export class SoftDeleteQueryBuilder extends objection.Model.QueryBuilder<BaseMod
       this.mergeContext({ restore: true });
       return super.patch({ [this.deletedAtAttr]: null });
     }
-    return super.patch({}); // @TODO Is this necesarry?
+    return super.patch({}); // @IMPROVEMENT I _could_ void here, but meh
   }
 
   get baseModelClass() {

@@ -7,7 +7,7 @@ class UserPolicy extends Policy {
   }
 
   users(): boolean {
-    return false;
+    return true;
   }
 
   createUser(): boolean {

@@ -9,9 +9,22 @@ export const rootTypeDefs = gql`
     _root: String
   }
 
-  interface Response {
-    code: Int!
-    message: String
-    success: Boolean!
+  type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+  }
+
+  interface INode {
+    id: ID!
+  }
+
+  interface IEdge {
+    cursor: String!
+    node: INode!
+  }
+
+  interface IConnection {
+    edges: [IEdge!]!
+    pageInfo: PageInfo!
   }
 `;

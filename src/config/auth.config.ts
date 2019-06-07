@@ -1,11 +1,11 @@
 import { KeyVal } from '../declarations';
 
 export interface IAuthConfig {
-  unauthenticatedActions: KeyVal<string[]>;
+  unauthenticatedOperations: KeyVal<string[]>;
 }
 
 export const auth: IAuthConfig = {
-  unauthenticatedActions: {
+  unauthenticatedOperations: {
     root: [
       '__schema',
     ],
@@ -14,6 +14,6 @@ export const auth: IAuthConfig = {
     ],
     user: [
       'createUser',
-    ]
+    ],
   },
 };

@@ -1,27 +1,18 @@
-import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { gql } from 'apollo-server-core';
 
-export enum HTTPErrors {
-  UNAUTHORIZED = 'UNAUTHORIZED'
+interface IGraphQLQueryData {
+  operationName: string;
+  args: any;
 }
 
-interface IHTTPError {
-  code: number;
-  message: string;
-  type: HTTPErrors;
-}
-
-export const httpErrors: { [key in HTTPErrors]: IHTTPError } = {
-  UNAUTHORIZED: {
-    code: 403,
-    message: 'Unauthorized',
-    type: HTTPErrors.UNAUTHORIZED
-  }
-};
-
-export const formatError = (error: GraphQLError): IHTTPError | GraphQLFormattedError => {
-  if (error.message in httpErrors) {
-    return httpErrors[error.message as keyof { [key in HTTPErrors]: IHTTPError }];
-  }
-
-  return error;
+export const extractDataForQuery = (query: string): IGraphQLQueryData | null => {
+  try {
+    const gqlObject = gql`${query}`;
+    const { name: { value: operationName }, arguments: args } = (<any>gqlObject.definitions[0]).selectionSet.selections[0];
+    return {
+      operationName,
+      args
+    };
+  } catch (e) {}
+  return null;
 }

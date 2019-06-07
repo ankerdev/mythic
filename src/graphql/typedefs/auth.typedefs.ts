@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express';
 
 export const authTypeDefs = gql`
   extend type Mutation {
-    createAuthenticationToken(input: CreateAuthenticationTokenInput!): AuthenticationTokenResponse!
+    createAuthenticationToken(input: CreateAuthenticationTokenInput!): CreateAuthenticationTokenResponse!
   }
 
   input CreateAuthenticationTokenInput {
@@ -10,10 +10,7 @@ export const authTypeDefs = gql`
     password: String!
   }
 
-  type AuthenticationTokenResponse implements Response {
-    code: Int!
-    message: String
-    success: Boolean!
-    token: String
+  type CreateAuthenticationTokenResponse {
+    token: String!
   }
 `;
