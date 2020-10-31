@@ -43,8 +43,3 @@ If you like contributing to things and see something you can improve--fork the r
 - Add out-of-the-box support for PubSub with Redis Pub/Sub
 - Allow for more databases in config, e.g. SQLite3 and PostgreSQL (NB. needs to be supported by objection.js and knex)
 - Other cool stuff to make it a better experience 😎
-
-## Hacktoberfest
-
-- PR1
-- PR3
